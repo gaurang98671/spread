@@ -27,7 +27,13 @@ subcommand = args.sub_command
 if subcommand == "spread":
     err = spread_middleware(args=args)
     if err == None:
-        call_embeddings, response_text = call_open_ai(args.prompt, engine=args.engine, temperature=float(args.temperature), calls=int(args.calls), openai_api_key=args.key)
+        call_embeddings, response_text = call_open_ai(
+            args.prompt,
+            engine=args.engine,
+            temperature=float(args.temperature),
+            calls=int(args.calls),
+            openai_api_key=args.key,
+        )
         score = get_similarity_score(call_embeddings)
         print(f"{bold('Score')}: {score}")
     else:
