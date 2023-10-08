@@ -15,10 +15,10 @@ main.py spread [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature 
 ```
 ### Options
 * -h, --help: Show this help message and exit.
-* -f FILE, --file FILE: Specify a prompt text file.
-* -n CALLS, --calls CALLS: Number of calls to LLM.
+* -f, --file FILE: Specify a prompt text file.
+* -n, --calls CALLS: Number of calls to LLM.
 * --key KEY: Provide the OpenAI API key.
-* -p PROMPT, --prompt PROMPT: Input prompt.
+* -p, --prompt PROMPT: Input prompt.
 * --temperature TEMPERATURE: Set the LLM temperature.
 * --engine ENGINE: Specify the LLM engine.
 
