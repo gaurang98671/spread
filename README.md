@@ -8,11 +8,6 @@ A simple command-line tool to test the quality of LLM prompts.
 main.py [-h] {spread} ...
 ```
 
-## Options
-
-* -h, --help: Show this help message and exit.
-
-
 ## Subcommands
 Check Spread of LLM Outputs
 ```
