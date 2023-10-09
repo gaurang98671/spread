@@ -23,6 +23,8 @@ main.py spread [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature 
 | -p  | --prompt       | Input prompt.                    |
 |     | --temperature  | Set the LLM temperature.         |
 |     | --engine       | Specify the LLM engine.          |
+|     | --log          | Add prefix to a log file         |
+| -v  | --verbose      | Print verbose output             |
 
 ## Example
 To check the spread of LLM outputs for a given prompt, you can use the spread subcommand with appropriate options
