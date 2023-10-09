@@ -13,14 +13,17 @@ Check Spread of LLM Outputs
 ```
 main.py spread [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE]
 ```
-### Options
-* -h, --help: Show this help message and exit.
-* -f, --file FILE: Specify a prompt text file.
-* -n, --calls CALLS: Number of calls to LLM.
-* --key KEY: Provide the OpenAI API key.
-* -p, --prompt PROMPT: Input prompt.
-* --temperature TEMPERATURE: Set the LLM temperature.
-* --engine ENGINE: Specify the LLM engine.
+## Options
+
+| Short Flags | Long Flags| Description|
+|-|-|-|
+| -h  | --help         | Show this help message and exit. |
+| -f  | --file         | Specify a prompt text file.      |
+| -n  | --calls        | Number of calls to LLM.          |
+|     | --key          | Provide the OpenAI API key.      |
+| -p  | --prompt       | Input prompt.                    |
+|     | --temperature  | Set the LLM temperature.         |
+|     | --engine       | Specify the LLM engine.          |
 
 ## Example
 To check the spread of LLM outputs for a given prompt, you can use the spread subcommand with appropriate options
