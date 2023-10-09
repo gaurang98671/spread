@@ -1,9 +1,8 @@
 import os
 
 
-def spread_middleware(args):
+def common_middleware(args):
     input_file = args.file
-    number_of_calls = args.calls
     prompt = args.prompt
     openai_api_key = args.key or os.environ.get("OPENAI_API_KEY", None)
     temperature = args.temperature

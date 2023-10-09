@@ -14,7 +14,6 @@ Check Spread of LLM Outputs
 main.py spread [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE]
 ```
 ## Options
-
 | Short Flags | Long Flags| Description|
 |-|-|-|
 | -h  | --help         | Show this help message and exit. |

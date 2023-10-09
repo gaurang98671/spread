@@ -1,8 +1,8 @@
 import numpy as np
-import miniball
 import openai
 from scipy.spatial import distance
-
+import datetime
+import os
 
 def get_distance(p1, p2):
     if len(p1) != len(p2):
@@ -34,7 +34,7 @@ def generate_vector(data, engine="text-embedding-ada-002"):
     return response["data"][0]["embedding"]
 
 
-def call_open_ai(prompt, engine, temperature, calls, openai_api_key):
+def call_open_ai(prompt, engine, temperature, calls, openai_api_key, log_suffix=None, verbose=False):
     openai.api_key = openai_api_key
     outputs = []
 
@@ -45,6 +45,15 @@ def call_open_ai(prompt, engine, temperature, calls, openai_api_key):
         )
 
         response_text = response["choices"][0]["text"]
+
+        # Store logs
+        if log_suffix:
+            create_directory_if_not_exists("logs", verbose=verbose)
+            current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M").replace(":", "_")
+            log_file = open(f"logs/{log_suffix}_{current_datetime}.log", "a")
+            log_file.write(f"{response_text}\n")
+            log_file.close()
+
 
         embeddings = generate_vector(data=response_text)
         outputs.append(tuple(embeddings))
@@ -57,3 +66,16 @@ def bold(text):
     bold_text = "\033[1m"
     reset_text = "\033[0m"
     return bold_text + text + reset_text
+
+def create_directory_if_not_exists(directory_name, verbose=False):
+   
+    if not os.path.exists(directory_name):
+        try:
+            # Create the directory
+            os.makedirs(directory_name)
+            if verbose:
+                print(f"Directory '{directory_name}' created.")
+        except OSError as e:
+            if verbose:
+                print(f"Error creating directory '{directory_name}': {str(e)}")
+    
