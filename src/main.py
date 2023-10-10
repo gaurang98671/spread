@@ -1,7 +1,5 @@
 import argparse
-import os
-from middleware import common_middleware
-from utils import call_open_ai, get_center, get_similarity_score, bold
+from controllers import spread_controller
 
 parser = argparse.ArgumentParser(
     description="A simple command-line tool to test quality of LLM prompts"
@@ -37,17 +35,4 @@ if verbose:
 
 # Access the parsed arguments
 if subcommand == "spread":
-    err = common_middleware(args=args)
-    if err == None:
-        call_embeddings, response_text = call_open_ai(
-            args.prompt,
-            engine=args.engine,
-            temperature=float(args.temperature),
-            calls=int(args.calls),
-            openai_api_key=args.key,
-            log_suffix=log_suffix,
-            verbose=verbose)
-        score = get_similarity_score(call_embeddings)
-        print(f"{bold('Spread')}: {score}")
-    else:
-        print(err)
+    spread_controller(args=args)

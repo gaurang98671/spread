@@ -34,7 +34,7 @@ def generate_vector(data, engine="text-embedding-ada-002"):
     return response["data"][0]["embedding"]
 
 
-def call_open_ai(prompt, engine, temperature, calls, openai_api_key, log_suffix=None, verbose=False):
+def call_open_ai(prompt, engine, temperature, calls, openai_api_key, log_prefix=None, verbose=False):
     openai.api_key = openai_api_key
     outputs = []
 
@@ -47,10 +47,10 @@ def call_open_ai(prompt, engine, temperature, calls, openai_api_key, log_suffix=
         response_text = response["choices"][0]["text"]
 
         # Store logs
-        if log_suffix:
+        if log_prefix:
             create_directory_if_not_exists("logs", verbose=verbose)
             current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M").replace(":", "_")
-            log_file = open(f"logs/{log_suffix}_{current_datetime}.log", "a")
+            log_file = open(f"logs/{log_prefix}_{current_datetime}.log", "a")
             log_file.write(f"{response_text}\n")
             log_file.close()
 
