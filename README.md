@@ -1,14 +1,13 @@
 # LLM Quality Testing CLI Tool
-
-The CLI tool operates by repeatedly prompting an LLM with the same input, capturing embeddings of the generated responses. It computes the center point within this embedding space and calculates the average Euclidean distance from the center to each response, providing a concise measure of response spread and LLM performance.
+This CLI tool operates by repeatedly prompting an LLM with the same input, capturing embeddings of the generated responses. It computes the center point within this embedding space and calculates the average Euclidean distance from the center to each response, providing a concise measure of response spread.
 
 ## Usage
-
 ```bash
 main.py [-h] {spread} ...
 ```
 
 ## Subcommands
+### Spread
 Check Spread of LLM Outputs
 ```
 main.py spread [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE]
@@ -31,9 +30,9 @@ To check the spread of LLM outputs for a given prompt, you can use the spread su
 ```
 (spread) C:\Users\pawar\Desktop\spread\src>python main.py spread -p "translate to french 'Hello, how are you?'" --calls 5
 Calling OpenAI(5/5)
-Score: 0.0
+Spread: 0.0
 
 (spread) C:\Users\pawar\Desktop\spread\src>python main.py spread -p "translate to french 'Hello, how are you?'" --calls 5 --temperature 0.90
 Calling OpenAI(5/5)
-Score: 0.185
+Spread: 0.185
 ```
