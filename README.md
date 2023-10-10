@@ -10,7 +10,7 @@ main.py [-h] {spread} ...
 ### Spread
 Check Spread of LLM Outputs
 ```
-main.py spread [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE]
+main.py [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE]   spread 
 ```
 ## Options
 | Short Flags | Long Flags| Description|
@@ -28,11 +28,11 @@ main.py spread [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature 
 ## Example
 To check the spread of LLM outputs for a given prompt, you can use the spread subcommand with appropriate options
 ```
-(spread) C:\Users\pawar\Desktop\spread\src>python main.py spread -p "translate to french 'Hello, how are you?'" --calls 5
+(spread) C:\Users\pawar\Desktop\spread\src>python main.py -p "translate to french 'Hello, how are you?'" --calls 5 spread 
 Calling OpenAI(5/5)
 Spread: 0.0
 
-(spread) C:\Users\pawar\Desktop\spread\src>python main.py spread -p "translate to french 'Hello, how are you?'" --calls 5 --temperature 0.90
+(spread) C:\Users\pawar\Desktop\spread\src>python main.py -p "translate to french 'Hello, how are you?'" --calls 5 --temperature 0.90 spread
 Calling OpenAI(5/5)
 Spread: 0.185
 ```
