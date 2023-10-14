@@ -14,7 +14,7 @@ python main.py [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature 
 ```
 
 ### Compare
-Compare command takes a target output and a prompt and gives the average distance between prompt and target output. Target argument needs target text or name/path of a text file containing target text.
+"Compare" command takes a target output and a prompt and gives the average distance between prompt and target output. Target argument needs target text or name/path of a text file containing target text. A smaller distance indicates a higher likelihood that the prompts will generate output resembling the target.
 
 ```
 python main.py [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE] compare -target [text/.txt file]
