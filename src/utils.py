@@ -4,6 +4,7 @@ from scipy.spatial import distance
 import datetime
 import os
 
+
 def get_distance(p1, p2):
     if len(p1) != len(p2):
         raise (Exception(f"Incorrect dimensions p1: {len(p1)} p2: {len(p2)}"))
@@ -34,32 +35,43 @@ def generate_vector(data, engine="text-embedding-ada-002"):
     return response["data"][0]["embedding"]
 
 
-def call_open_ai(prompt, engine, temperature, calls, openai_api_key, log_prefix=None, verbose=False):
+# TODO : Add support for chat complemetion models like gpt-3.5-turbo
+def call_open_ai(
+    prompt, engine, temperature, calls, openai_api_key, log_prefix=None, verbose=False
+):
     openai.api_key = openai_api_key
     outputs = []
 
     for i in range(int(calls)):
         print(f"Calling OpenAI({i+1}/{calls})", end="\r")
-        response = openai.Completion.create(
-            engine=engine, temperature=temperature, prompt=prompt, max_tokens=500
-        )
 
-        response_text = response["choices"][0]["text"]
+        try:
+            response = openai.Completion.create(
+                engine=engine, temperature=temperature, prompt=prompt
+            )
+            response_text = response["choices"][0]["text"]
+        except Exception as e:
+            if verbose:
+                print(e)
+            return None, None, "Failed to called openai. Check log for err messagee"
 
         # Store logs
         if log_prefix:
             create_directory_if_not_exists("logs", verbose=verbose)
-            current_datetime = datetime.datetime.now().strftime("%Y-%m-%d %H:%M").replace(":", "_")
+            current_datetime = (
+                datetime.datetime.now().strftime("%Y-%m-%d %H:%M").replace(":", "_")
+            )
             log_file = open(f"logs/{log_prefix}_{current_datetime}.log", "a")
-            log_file.write(f"{response_text}\n")
-            log_file.close()
 
+            # Parsing string from 3rd index because openai response has two newline characters(\n) at the beginning of string.
+            log_file.write(f"OpenAI response : {response_text[3:]}\n")
+            log_file.close()
 
         embeddings = generate_vector(data=response_text)
         outputs.append(tuple(embeddings))
     print("")
 
-    return outputs, response_text
+    return outputs, response_text, None
 
 
 def bold(text):
@@ -67,8 +79,8 @@ def bold(text):
     reset_text = "\033[0m"
     return bold_text + text + reset_text
 
+
 def create_directory_if_not_exists(directory_name, verbose=False):
-   
     if not os.path.exists(directory_name):
         try:
             # Create the directory
@@ -78,4 +90,3 @@ def create_directory_if_not_exists(directory_name, verbose=False):
         except OSError as e:
             if verbose:
                 print(f"Error creating directory '{directory_name}': {str(e)}")
-    

@@ -8,10 +8,18 @@ main.py [-h] {spread} ...
 
 ## Subcommands
 ### Spread
-Check Spread of LLM Outputs
+Check Spread of LLM Outputs. Spread is the average Euclidean distance of embeddings prompt outputs and their centroid. 
 ```
-main.py [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE]   spread 
+python main.py [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE] spread 
 ```
+
+### Compare
+Compare command takes a target output and a prompt and gives the average distance between prompt and target output. Target argument needs target text or name/path of a text file containing target text.
+
+```
+python main.py [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE] compare -target [text/.txt file]
+```
+
 ## Options
 | Short Flags | Long Flags| Description|
 |-|-|-|
@@ -32,7 +40,7 @@ To check the spread of LLM outputs for a given prompt, you can use the spread su
 Calling OpenAI(5/5)
 Spread: 0.0
 
-(spread) C:\Users\pawar\Desktop\spread\src>python main.py -p "translate to french 'Hello, how are you?'" --calls 5 --temperature 0.90 spread
-Calling OpenAI(5/5)
-Spread: 0.185
+(spread) C:\Users\pawar\Desktop\spread\src>python main.py -p "translate to spanish 'Hello, how are you?'" --calls 2 --temperature 0.9 compare -target "Test target text"
+Calling OpenAI(2/2)
+Distance : 0.00034403593720296695
 ```

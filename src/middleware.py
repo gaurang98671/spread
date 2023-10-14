@@ -24,6 +24,15 @@ def common_middleware(args):
     return None
 
 
-# TODO: To be implemented
 def compare_middleware(args):
-    pass
+    target = args.target
+
+    if target.endswith(".txt"):
+        if args.verbose:
+            print(f"Parsing {target} file")
+        try:
+            f = open(target, "r")
+            args.target = f.read()
+            f.close()
+        except FileExistsError as e:
+            return f"{target} file not found"
