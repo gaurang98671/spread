@@ -13,20 +13,17 @@ subpraser = parser.add_subparsers(
     required=True,
 )
 
-# Subcommands
-
 # Spread
-spread_parser = subpraser.add_parser("spread")
+spread_parser = subpraser.add_parser("spread", help="Checks the Spread of LLM Outputs")
 spread_parser = add_common_arguments(spread_parser)
 
 # Compare
-compare_parser = subpraser.add_parser("compare")
+compare_parser = subpraser.add_parser("compare", help="Gives the average distance between prompt and target output")
 compare_parser = add_common_arguments(compare_parser)
 compare_parser.add_argument(
     "--target",
-    help="Target prompt output. This could be passed in as string or a text file",
+    help="Target prompt output. This could be passed in as a string or a text file",
 )
-
 
 # Parse the command-line arguments
 args = parser.parse_args()
