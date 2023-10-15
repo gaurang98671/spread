@@ -5,11 +5,11 @@ from utils import (
     generate_vector,
     get_distance,
 )
-from middleware import common_middleware, compare_middleware
 import copy
 
 
 def handle_command(args, controller, middlewares):
+    
     # Handle all middlewares
     for middleware in middlewares:
         err = middleware(args=args)
