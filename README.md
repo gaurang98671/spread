@@ -1,4 +1,4 @@
-# LLM Quality Testing CLI Tool
+# Prompt Quality Testing CLI Tool
 This CLI tool operates by repeatedly prompting an LLM with the same input, capturing embeddings of the generated responses. It computes the center point within this embedding space and calculates the average Euclidean distance from the center to each response, providing a concise measure of response spread.
 
 ## Getting started
