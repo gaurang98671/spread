@@ -33,7 +33,6 @@ def spread_controller(args):
 def compare_controller(args):
     err = common_middleware(args=args)
     err2 = compare_middleware(args)
-
     if err != None:
         print(err)
     elif err2 != None:

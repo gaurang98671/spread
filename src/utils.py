@@ -49,7 +49,7 @@ def call_open_ai(
             response = openai.Completion.create(
                 engine=engine, temperature=temperature, prompt=prompt
             )
-            response_text = response["choices"][0]["text"]
+            response_text = response["choices"][0]["text"].replace("\n", "")
         except Exception as e:
             if verbose:
                 print(e)
@@ -58,13 +58,8 @@ def call_open_ai(
         # Store logs
         if log_prefix:
             create_directory_if_not_exists("logs", verbose=verbose)
-            current_datetime = (
-                datetime.datetime.now().strftime("%Y-%m-%d %H:%M").replace(":", "_")
-            )
-            log_file = open(f"logs/{log_prefix}_{current_datetime}.log", "a")
-
-            # Parsing string from 3rd index because openai response has two newline characters(\n) at the beginning of string.
-            log_file.write(f"OpenAI response : {response_text[3:]}\n")
+            log_file = open(f"logs/{log_prefix}.log", "a")
+            log_file.write(f"\nOpenAI response : {response_text}")
             log_file.close()
 
         embeddings = generate_vector(data=response_text)
