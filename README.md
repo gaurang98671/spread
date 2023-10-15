@@ -1,9 +1,11 @@
 # LLM Quality Testing CLI Tool
 This CLI tool operates by repeatedly prompting an LLM with the same input, capturing embeddings of the generated responses. It computes the center point within this embedding space and calculates the average Euclidean distance from the center to each response, providing a concise measure of response spread.
 
-## Usage
-```bash
-main.py [-h] {spread} ...
+## Getting started
+```
+git clone gaurang98671/spread
+cd spread
+pip install -r requirements.txt
 ```
 
 ## Subcommands
