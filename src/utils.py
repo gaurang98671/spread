@@ -1,7 +1,6 @@
 import numpy as np
 import openai
 from scipy.spatial import distance
-import datetime
 import os
 
 

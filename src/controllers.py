@@ -6,53 +6,58 @@ from utils import (
     get_distance,
 )
 from middleware import common_middleware, compare_middleware
+import copy
+
+
+def handle_command(args, controller, middlewares):
+    # Handle all middlewares
+    for middleware in middlewares:
+        err = middleware(args=args)
+        if err != None:
+            print(err)
+
+    # Run controller for each prompt
+    prompts = args.prompt
+    for prompt in prompts:
+        args_copy = copy.deepcopy(args)
+        args_copy.prompt = prompt
+        controller(args_copy)
 
 
 def spread_controller(args):
-    err = common_middleware(args=args)
-    if err == None:
-        call_embeddings, _, err = call_open_ai(
-            args.prompt,
-            engine=args.engine,
-            temperature=float(args.temperature),
-            calls=int(args.calls),
-            openai_api_key=args.key,
-            log_prefix=args.log,
-            verbose=args.verbose,
-        )
+    call_embeddings, _, err = call_open_ai(
+        args.prompt,
+        engine=args.engine,
+        temperature=float(args.temperature),
+        calls=int(args.calls),
+        openai_api_key=args.key,
+        log_prefix=args.log,
+        verbose=args.verbose,
+    )
 
-        if err != None:
-            print(err)
-        else:
-            score = get_similarity_score(call_embeddings)
-            print(f"{bold('Spread')}: {score}")
-    else:
+    if err != None:
         print(err)
+    else:
+        score = get_similarity_score(call_embeddings)
+        print(f"{bold('Spread')}: {score}")
 
 
 def compare_controller(args):
-    err = common_middleware(args=args)
-    err2 = compare_middleware(args)
+    target_embeddings = generate_vector(args.target)
+    call_embeddings, _, err = call_open_ai(
+        args.prompt,
+        engine=args.engine,
+        temperature=float(args.temperature),
+        calls=int(args.calls),
+        openai_api_key=args.key,
+        log_prefix=args.log,
+        verbose=args.verbose,
+    )
+
     if err != None:
         print(err)
-    elif err2 != None:
-        print(err2)
     else:
-        target_embeddings = generate_vector(args.target)
-        call_embeddings, _, err = call_open_ai(
-            args.prompt,
-            engine=args.engine,
-            temperature=float(args.temperature),
-            calls=int(args.calls),
-            openai_api_key=args.key,
-            log_prefix=args.log,
-            verbose=args.verbose,
-        )
-
-        if err != None:
-            print(err)
-        else:
-            avg_distance = sum(
-                [get_distance(target_embeddings, x) for x in call_embeddings]
-            ) / len(call_embeddings)
-            print(f"{bold('Distance')} : {avg_distance}")
+        avg_distance = sum(
+            [get_distance(target_embeddings, x) for x in call_embeddings]
+        ) / len(call_embeddings)
+        print(f"{bold('Distance')} : {avg_distance}")

@@ -34,6 +34,7 @@ python main.py compare [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temp
 |     | --engine       | LLM engine.                      |
 |     | --log          | Add prefix to a log file         |
 | -v  | --verbose      | Print verbose output             |
+| -np | --nprompt      | Pass in multiple prompt files    |
 
 ## Example
 To check the spread of LLM outputs for a given prompt, you can use the spread subcommand with appropriate options
