@@ -26,6 +26,12 @@ compare_parser.add_argument(
     help="Target prompt output. This could be passed in as a string or a text file",
 )
 
+#Test
+test_parser = subpraser.add_parser(
+    "test", help=""
+)
+test_parser.add_argument("file", help="YAML file containing all the test cases")
+
 # Parse the command-line arguments
 args = parser.parse_args()
 subcommand = args.sub_command

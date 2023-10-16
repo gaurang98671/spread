@@ -22,6 +22,11 @@ python main.py spread [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--tempe
 python main.py compare [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE] -target [text/.txt file]
 ```
 
+### Creating Test Cases
+```
+
+```
+
 ## Options
 | Short Flags | Long Flags| Description|
 |-|-|-|

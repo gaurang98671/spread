@@ -6,3 +6,4 @@ pyvenv.cfg
 .gitattributes
 *.log
 *.log
+test.yaml
