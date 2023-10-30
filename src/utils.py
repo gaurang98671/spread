@@ -2,6 +2,8 @@ import numpy as np
 import openai
 from scipy.spatial import distance
 import os
+import yaml
+import json
 
 
 def get_distance(p1, p2):
@@ -84,3 +86,17 @@ def create_directory_if_not_exists(directory_name, verbose=False):
         except OSError as e:
             if verbose:
                 print(f"Error creating directory '{directory_name}': {str(e)}")
+
+def read_yaml(file_name):
+    file = open(file_name, "r")
+    yaml_text = file.read()
+    file.close()
+    yaml_dict = yaml.safe_load(yaml_text)
+    return yaml_dict
+
+def read_json(file_name):
+    file = open(file_name, "r")
+    json_text = file.read()
+    file.close()
+    json_dict = json.load(json_text)
+    return json_dict

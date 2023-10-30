@@ -1,6 +1,6 @@
 import argparse
 from middleware import add_common_arguments, common_middleware, compare_middleware
-from controllers import spread_controller, compare_controller, handle_command
+from controllers import spread_controller, compare_controller, handle_command, test_controller
 
 parser = argparse.ArgumentParser(
     description="A simple command-line tool to test quality of LLM prompts"
@@ -28,21 +28,21 @@ compare_parser.add_argument(
 
 #Test
 test_parser = subpraser.add_parser(
-    "test", help=""
+    "test", help="Requires test.yaml file"
 )
 test_parser.add_argument("file", help="YAML file containing all the test cases")
 
 # Parse the command-line arguments
 args = parser.parse_args()
 subcommand = args.sub_command
-verbose = args.verbose
-log_suffix = args.log
 
-if verbose:
+if 'verbose' in args:
     print(args)
 
-# Access the parsed arguments
+# Access the parsed argument
 if subcommand == "spread":
     handle_command(args, spread_controller, [common_middleware])
 elif subcommand == "compare":
     handle_command(args, compare_controller, [common_middleware, compare_middleware])
+elif subcommand == "test":
+    handle_command(args, test_controller, [])
