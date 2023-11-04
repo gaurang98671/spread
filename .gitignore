@@ -6,7 +6,8 @@ pyvenv.cfg
 .gitattributes
 *.log
 *.log
-test.yaml
+src/test.yaml
 src/mock1.json
 src/mock2.json
 src/user_prompt.txt
+

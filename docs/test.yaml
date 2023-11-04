@@ -1,0 +1,32 @@
+system:
+  - name: System Prompt
+    prompts:
+      - name: Test System Prompt
+        prompt:
+          text: This is a test prompt
+        mock:
+          - file: mock1.json
+          - file: mock2.json
+        time: 1
+        spread: 0.001
+        target:
+            text: This is a target text
+            max: 0.003
+      - name: Summarize system prompt
+        prompt:
+          text: Summarize system in 100 words
+          time: 2
+
+
+user:
+  - name: User prompts
+    prompts:
+      - name: Summarize user profile prompt
+        calls: 5
+        temperature: 0.5
+        prompt:
+          file: user_prompt.txt
+        mock:
+          - file: mock1.json
+          - file: mock2.json
+        time: 2
