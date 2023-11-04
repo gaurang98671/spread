@@ -4,13 +4,12 @@ from utils import (
     bold,
     generate_vector,
     get_distance,
-    read_yaml
+    read_yaml,
 )
 import copy
 
 
 def handle_command(args, controller, middlewares):
-    
     # Handle all middlewares
     for middleware in middlewares:
         err = middleware(args=args)
@@ -18,7 +17,7 @@ def handle_command(args, controller, middlewares):
             print(err)
 
     # Run controller for each prompt
-    if 'prompt' in args:
+    if "prompt" in args:
         prompts = args.prompt
         for prompt in prompts:
             args_copy = copy.deepcopy(args)
@@ -66,8 +65,8 @@ def compare_controller(args):
         ) / len(call_embeddings)
         print(f"{bold('Distance')} : {avg_distance}")
 
+
 def test_controller(args):
-        
     test_config_data = read_yaml(args.file)
     print(test_config_data)
     for section in test_config_data:

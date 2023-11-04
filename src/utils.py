@@ -87,12 +87,14 @@ def create_directory_if_not_exists(directory_name, verbose=False):
             if verbose:
                 print(f"Error creating directory '{directory_name}': {str(e)}")
 
+
 def read_yaml(file_name):
     file = open(file_name, "r")
     yaml_text = file.read()
     file.close()
     yaml_dict = yaml.safe_load(yaml_text)
     return yaml_dict
+
 
 def read_json(file_name):
     file = open(file_name, "r")
