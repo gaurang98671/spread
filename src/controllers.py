@@ -7,6 +7,7 @@ from utils import (
     read_yaml,
 )
 import copy
+from TestCase import TestCase
 
 
 def handle_command(args, controller, middlewares):
@@ -68,8 +69,12 @@ def compare_controller(args):
 
 def test_controller(args):
     test_config_data = read_yaml(args.file)
-    print(test_config_data)
+
     for section in test_config_data:
         print(section)
-        for prompt in test_config_data.get(section, []):
-            print(prompt.get("name"))
+        print("-" * 50)
+        for prompts in test_config_data.get(section, []):
+            for sub_prompt in prompts["prompts"]:
+                p = TestCase(sub_prompt)
+                print(str(p))
+        print("*" * 50)

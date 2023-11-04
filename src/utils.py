@@ -100,5 +100,5 @@ def read_json(file_name):
     file = open(file_name, "r")
     json_text = file.read()
     file.close()
-    json_dict = json.load(json_text)
+    json_dict = json.loads(json_text)
     return json_dict

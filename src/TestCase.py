@@ -8,22 +8,20 @@ class TestCase:
         self.name = prompt.get("name")
         self.prompt = self.__set_prompt(prompt)
         self.mocks = self.__set_mocks(prompt)
+
+        # Set criteria
         self.temperature = prompt.get("temperature", 0.0)
         self.time = prompt.get("time", None)
         self.target = self._set_target(prompt) if "target" in prompt else None
 
     def __check_prompt(self, prompt):
-        required_fields = set("name", "prompt", "criteria")
+        required_fields = set(["name", "prompt"])
 
         # Check required fields
         for field in required_fields:
             if field not in prompt:
-                raise (Exception(f"Missing required field {field}"))
-
-        # Handle unknown fields
-        for field in prompt:
-            if field not in required_fields:
-                raise (Exception(f"Unknown field {field}"))
+                print(prompt)
+                raise (Exception(f"Missing required field '{field}'"))
 
         # Check mock
         if "mock" in prompt:
@@ -54,6 +52,12 @@ class TestCase:
             if "file" not in mock:
                 raise (Exception(f"Missing file field in mock for {self.name}"))
             file_name = mock.get("file")
+            if not file_name.endswith(".json"):
+                raise (
+                    Exception(
+                        f"Mock file should be JSON. Got {file_name[file_name.rfind('.'):]} in {file_name}"
+                    )
+                )
             mock_data.append(read_json(file_name))
         return mock_data
 
@@ -74,3 +78,16 @@ class TestCase:
             return {"text": text, "max": target.get("max")}
 
         return {"text": target.get("text"), "max": target.get("max")}
+
+    def __str__(self) -> str:
+        attrs = [
+            x for x in dir(self) if not x.startswith("__") and not x.startswith("_")
+        ]
+        str_object = ""
+
+        for attr in attrs:
+            value = getattr(self, attr)
+            if value is not None:
+                str_object += f"{attr}: {value}\n"
+
+        return str_object
