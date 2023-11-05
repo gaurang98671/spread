@@ -4,7 +4,7 @@ from scipy.spatial import distance
 import os
 import yaml
 import json
-
+import time
 
 def get_distance(p1, p2):
     if len(p1) != len(p2):
@@ -48,20 +48,22 @@ def call_open_ai(
 ):
     openai.api_key = openai_api_key
     outputs = []
+    time_per_call_in_seconds = []
 
     for i in range(int(calls)):
         if verbose:
             print(f"Calling OpenAI({i+1}/{calls})", end="\r")
 
         try:
+            start_time = time.time()
             response = openai.Completion.create(
                 engine=engine, temperature=temperature, prompt=prompt
             )
+            end_time = time.time()
+            time_per_call_in_seconds.append(end_time - start_time)
             response_text = response["choices"][0]["text"].replace("\n", "")
         except Exception as e:
-            if verbose:
-                print(e)
-            return None, None, "Failed to called openai. Check log for err messagee"
+            raise(Exception("Failed to called openai. Check log for err messagee"))
 
         # Store logs
         if log_prefix:
@@ -74,7 +76,7 @@ def call_open_ai(
         outputs.append(tuple(embeddings))
     print("")
 
-    return outputs, response_text, None
+    return outputs, response_text, sum(time_per_call_in_seconds)/len(time_per_call_in_seconds)
 
 
 def bold(text):
@@ -128,7 +130,7 @@ def read_json(file_name):
 
 def get_embeddings(args=None, dict=None):
     if args:
-        call_embeddings, _, err = call_open_ai(
+        call_embeddings, _, avg_time_per_call= call_open_ai(
             args.prompt,
             engine=args.engine,
             temperature=float(args.temperature),
@@ -138,7 +140,7 @@ def get_embeddings(args=None, dict=None):
             verbose=args.verbose,
         )
     elif dict:
-        call_embeddings, _, err = call_open_ai(
+        call_embeddings, _, avg_time_per_call = call_open_ai(
             dict.get("prompt"),
             engine=dict.get("engine"),
             temperature=float(dict.get("temperature")),
@@ -146,7 +148,6 @@ def get_embeddings(args=None, dict=None):
             openai_api_key=dict.get("key")
         )
 
-    if err != None:
-        raise(Exception(err))
     
-    return call_embeddings
+    
+    return call_embeddings, avg_time_per_call

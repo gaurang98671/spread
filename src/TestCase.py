@@ -18,35 +18,56 @@ class TestCase:
         self.target = self._set_target(prompt) if "target" in prompt else None
         self.spread = prompt.get("spread", None)
 
-    def test(self):
+    def run_test_case(self):
         if self.time == None and self.target == None and self.spread == None:
             return
-        for mock_file, mock_data in self.mocks.items():
-            print(f"For {mock_file}")
+        
+        if len(self.mocks) != 0:
+            for mock_file, mock_data in self.mocks.items():
+                print(f"For {mock_file}")
+                args = {
+                    "prompt": self.prompt.format(**mock_data),
+                    "engine": self.engine,
+                    "temperature": self.temperature,
+                    "calls": self.calls,
+                    "key": self.key
+                }
+                self.display_results(args)
+        else:
             args = {
-                "prompt": self.prompt.format(**mock_data),
-                "engine": self.engine,
-                "temperature": self.temperature,
-                "calls": self.calls,
-                "key": self.key
-            }
-            embeddings = get_embeddings(dict=args)
-            if self.spread is not None:
-                spread = get_similarity_score(embeddings, 8)
-                print("SPREAD : ", end="")
-                if spread < self.spread:
-                    print_color("OKGREEN", "PASSED")
-                else:
-                    print_color("FAIL", "FAILED")
-            if self.target is not None:
-                distance = get_avg_embeddings_distance(embeddings, self.target.get("text"))
-                print("TARGET : ", end="")
-                if distance <= self.target.get("max"):
-                    print_color("OKGREEN", "PASSED")
-                else:
-                    print_color("FAIL", "FAILED")
+                    "prompt": self.prompt,
+                    "engine": self.engine,
+                    "temperature": self.temperature,
+                    "calls": self.calls,
+                    "key": self.key
+                }
+            self.display_results(args)
 
-
+        
+    def display_results(self, args):
+        embeddings, avg_time_per_call = get_embeddings(dict=args)
+        if self.spread is not None:
+            spread = get_similarity_score(embeddings, 8)
+            print("SPREAD : ", end="")
+            if spread < self.spread:
+                print_color("OKGREEN", "PASSED")
+            else:
+                print_color("FAIL", "FAILED")
+        
+        if self.target is not None:
+            distance = get_avg_embeddings_distance(embeddings, self.target.get("text"))
+            print("TARGET : ", end="")
+            if distance <= self.target.get("max"):
+                print_color("OKGREEN", "PASSED")
+            else:
+                print_color("FAIL", "FAILED")
+        
+        if self.time is not None:
+            print("TIME : ", end="")
+            if avg_time_per_call <= self.time:
+                print_color("OKGREEN", "PASSED")
+            else:
+                print_color("FAIL", "FAILED")
 
     def __check_prompt(self, prompt):
         required_fields = set(["name", "prompt", "calls"])

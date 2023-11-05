@@ -32,13 +32,13 @@ def handle_command(args, controller, middlewares):
 
 
 def spread_controller(args):
-    call_embeddings = get_embeddings(args=args)
+    call_embeddings, _ = get_embeddings(args=args)
     score = get_similarity_score(call_embeddings)
 
     print(f"{bold('Spread')}: {score}")
 
 def compare_controller(args):
-    call_embeddings = get_embeddings(args=args)
+    call_embeddings, _ = get_embeddings(args=args)
     avg_distance = get_avg_embeddings_distance(call_embeddings, args.target)
     print(f"{bold('Distance')} : {avg_distance}")
 
@@ -52,6 +52,6 @@ def test_controller(args):
         for prompts in test_config_data.get(section, []):
             for sub_prompt in prompts["prompts"]:
                 p = TestCase(sub_prompt)
-                p.test()
-                
+                p.run_test_case()
+
         print("*" * 50)
