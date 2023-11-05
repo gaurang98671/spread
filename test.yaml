@@ -4,7 +4,6 @@ system:
       - name: Test System Prompt
         prompt:
           text: This is a test prompt
-        calls: 10
         mock:
           - file: mock1.json
           - file: mock2.json
@@ -16,15 +15,14 @@ system:
       - name: Summarize system prompt
         prompt:
           text: Summarize system in 100 words
-        calls: 5
-        time: 2
+          time: 2
 
 
 user:
   - name: User prompts
     prompts:
       - name: Summarize user profile prompt
-        calls: 10
+        calls: 5
         temperature: 0.5
         prompt:
           file: user_prompt.txt

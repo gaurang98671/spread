@@ -8,20 +8,25 @@ class TestCase:
         self.name = prompt.get("name")
         self.prompt = self.__set_prompt(prompt)
         self.mocks = self.__set_mocks(prompt)
+        self.calls = prompt.get("calls")
 
         # Set criteria
         self.temperature = prompt.get("temperature", 0.0)
         self.time = prompt.get("time", None)
         self.target = self._set_target(prompt) if "target" in prompt else None
 
+
+    def test(self):
+        print("Testing", self.name)
+
     def __check_prompt(self, prompt):
-        required_fields = set(["name", "prompt"])
+        required_fields = set(["name", "prompt", "calls"])
 
         # Check required fields
         for field in required_fields:
             if field not in prompt:
                 print(prompt)
-                raise (Exception(f"Missing required field '{field}'"))
+                raise (Exception(f"Missing required field '{field}' \nFor {prompt}"))
 
         # Check mock
         if "mock" in prompt:

@@ -24,7 +24,6 @@ python main.py compare [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temp
 
 ### Creating Test Cases
 ```
-
 ```
 
 ## Options

@@ -77,4 +77,5 @@ def test_controller(args):
             for sub_prompt in prompts["prompts"]:
                 p = TestCase(sub_prompt)
                 print(str(p))
+                p.test()
         print("*" * 50)
