@@ -75,6 +75,22 @@ def bold(text):
     reset_text = "\033[0m"
     return bold_text + text + reset_text
 
+def print_color(color, text):
+    colors = {
+        "HEADER":'\033[95m',
+        "OKBLUE":'\033[94m',
+        "OKCYAN":'\033[96m',
+        "OKGREEN":'\033[92m',
+        "WARNING":'\033[93m',
+        "FAIL":'\033[91m',
+        "ENDC":'\033[0m',
+        "BOLD":'\033[1m',
+        "UNDERLINE": '\033[4m'
+    }
+
+    print(f"{colors.get(color)}{text}{colors.get('ENDC')}")
+
+    
 
 def create_directory_if_not_exists(directory_name, verbose=False):
     if not os.path.exists(directory_name):
@@ -102,3 +118,19 @@ def read_json(file_name):
     file.close()
     json_dict = json.loads(json_text)
     return json_dict
+
+def get_embeddings(args):
+    call_embeddings, _, err = call_open_ai(
+        args.prompt,
+        engine=args.engine,
+        temperature=float(args.temperature),
+        calls=int(args.calls),
+        openai_api_key=args.key,
+        log_prefix=args.log,
+        verbose=args.verbose,
+    )
+
+    if err != None:
+        raise(Exception(err))
+    
+    return call_embeddings

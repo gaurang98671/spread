@@ -1,4 +1,5 @@
-from utils import read_json
+from utils import read_json, print_color, get_embeddings
+from controllers import spread_controller
 
 
 class TestCase:
@@ -8,16 +9,18 @@ class TestCase:
         self.name = prompt.get("name")
         self.prompt = self.__set_prompt(prompt)
         self.mocks = self.__set_mocks(prompt)
-        self.calls = prompt.get("calls")
-
-        # Set criteria
+        self.calls = prompt.get("calls", None)
+        self.engine = prompt.get("engine", None)
         self.temperature = prompt.get("temperature", 0.0)
+        
+        # Set criteria
         self.time = prompt.get("time", None)
         self.target = self._set_target(prompt) if "target" in prompt else None
-
+        self.spread = prompt.get("spread", None)
 
     def test(self):
-        print("Testing", self.name)
+        for mock_data in self.mocks:
+            print(f"Testing {self.prompt.format(**mock_data)}")
 
     def __check_prompt(self, prompt):
         required_fields = set(["name", "prompt", "calls"])
@@ -51,7 +54,7 @@ class TestCase:
                 Exception(f"No 'text' or 'file' field was found for prompt {self.name}")
             )
 
-    def __set_mocks(self, prompt):
+    def __set_mocks(self, prompt) -> list:
         mock_data = []
         for mock in prompt.get("mock", []):
             if "file" not in mock:
@@ -96,3 +99,5 @@ class TestCase:
                 str_object += f"{attr}: {value}\n"
 
         return str_object
+
+    

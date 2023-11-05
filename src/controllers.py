@@ -5,6 +5,8 @@ from utils import (
     generate_vector,
     get_distance,
     read_yaml,
+    print_color,
+    get_embeddings
 )
 import copy
 from TestCase import TestCase
@@ -28,50 +30,37 @@ def handle_command(args, controller, middlewares):
         controller(args)
 
 
-def spread_controller(args):
-    call_embeddings, _, err = call_open_ai(
-        args.prompt,
-        engine=args.engine,
-        temperature=float(args.temperature),
-        calls=int(args.calls),
-        openai_api_key=args.key,
-        log_prefix=args.log,
-        verbose=args.verbose,
-    )
+def spread_controller(args=None, call_embeddings=None):
+    if not call_embeddings and not args:
+        raise Exception("Missing arguments: You must provide either 'args' or 'call_embeddings' in the function call.")
+    elif not call_embeddings:    
+        call_embeddings = get_embeddings(args=args)
+    
+    score = get_similarity_score(call_embeddings)
+    print(f"{bold('Spread')}: {score}")
+    return score
 
-    if err != None:
-        print(err)
-    else:
-        score = get_similarity_score(call_embeddings)
-        print(f"{bold('Spread')}: {score}")
-
-
-def compare_controller(args):
+def compare_controller(args=None, call_embeddings=None):
     target_embeddings = generate_vector(args.target)
-    call_embeddings, _, err = call_open_ai(
-        args.prompt,
-        engine=args.engine,
-        temperature=float(args.temperature),
-        calls=int(args.calls),
-        openai_api_key=args.key,
-        log_prefix=args.log,
-        verbose=args.verbose,
-    )
-
-    if err != None:
-        print(err)
-    else:
-        avg_distance = sum(
-            [get_distance(target_embeddings, x) for x in call_embeddings]
-        ) / len(call_embeddings)
-        print(f"{bold('Distance')} : {avg_distance}")
+    if not call_embeddings and not args:
+        raise Exception("Missing arguments: You must provide either 'args' or 'call_embeddings' in the function call.")
+    elif not call_embeddings:    
+        call_embeddings = get_embeddings(args=args)
+    
+    avg_distance = sum(
+        [get_distance(target_embeddings, x) for x in call_embeddings]
+    ) / len(call_embeddings)
+    print(f"{bold('Distance')} : {avg_distance}")
+    
+    return avg_distance
 
 
 def test_controller(args):
     test_config_data = read_yaml(args.file)
 
     for section in test_config_data:
-        print(section)
+        
+        print_color("BOLD", section)
         print("-" * 50)
         for prompts in test_config_data.get(section, []):
             for sub_prompt in prompts["prompts"]:
