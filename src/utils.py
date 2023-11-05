@@ -16,11 +16,11 @@ def get_distance(p1, p2):
     return sum(dist) / len(dist)
 
 
-def get_similarity_score(points):
+def get_similarity_score(points, precesion=3):
     center = get_center(points)
     distance = [get_distance(center, x) for x in points]
     score = (sum(distance) / len(distance)) * 10**4
-    return round(score, 3)
+    return round(score, precesion)
 
 
 def get_center(points):
@@ -29,6 +29,12 @@ def get_center(points):
     center_index = np.argmin(distances.sum(axis=0))
     center = points[center_index]
     return center
+
+def get_avg_embeddings_distance(embeddings, target_text):
+    target_embeddings = generate_vector(target_text)
+    return sum(
+        [get_distance(target_embeddings, x) for x in embeddings]
+    ) / len(embeddings)
 
 
 def generate_vector(data, engine="text-embedding-ada-002"):
@@ -44,7 +50,8 @@ def call_open_ai(
     outputs = []
 
     for i in range(int(calls)):
-        print(f"Calling OpenAI({i+1}/{calls})", end="\r")
+        if verbose:
+            print(f"Calling OpenAI({i+1}/{calls})", end="\r")
 
         try:
             response = openai.Completion.create(
@@ -119,16 +126,25 @@ def read_json(file_name):
     json_dict = json.loads(json_text)
     return json_dict
 
-def get_embeddings(args):
-    call_embeddings, _, err = call_open_ai(
-        args.prompt,
-        engine=args.engine,
-        temperature=float(args.temperature),
-        calls=int(args.calls),
-        openai_api_key=args.key,
-        log_prefix=args.log,
-        verbose=args.verbose,
-    )
+def get_embeddings(args=None, dict=None):
+    if args:
+        call_embeddings, _, err = call_open_ai(
+            args.prompt,
+            engine=args.engine,
+            temperature=float(args.temperature),
+            calls=int(args.calls),
+            openai_api_key=args.key,
+            log_prefix=args.log,
+            verbose=args.verbose,
+        )
+    elif dict:
+        call_embeddings, _, err = call_open_ai(
+            dict.get("prompt"),
+            engine=dict.get("engine"),
+            temperature=float(dict.get("temperature")),
+            calls=int(dict.get("calls")),
+            openai_api_key=dict.get("key")
+        )
 
     if err != None:
         raise(Exception(err))

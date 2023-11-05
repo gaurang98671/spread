@@ -1,6 +1,5 @@
-from utils import read_json, print_color, get_embeddings
-from controllers import spread_controller
-
+from utils import read_json, print_color, get_embeddings, get_avg_embeddings_distance, get_similarity_score
+import os 
 
 class TestCase:
     def __init__(self, prompt) -> None:
@@ -9,18 +8,45 @@ class TestCase:
         self.name = prompt.get("name")
         self.prompt = self.__set_prompt(prompt)
         self.mocks = self.__set_mocks(prompt)
-        self.calls = prompt.get("calls", None)
-        self.engine = prompt.get("engine", None)
+        self.calls = prompt.get("calls", 1)
+        self.engine = prompt.get("engine", "text-davinci-003")
         self.temperature = prompt.get("temperature", 0.0)
-        
+        self.key = prompt.get("key", os.environ.get("OPENAI_API_KEY"))
+
         # Set criteria
         self.time = prompt.get("time", None)
         self.target = self._set_target(prompt) if "target" in prompt else None
         self.spread = prompt.get("spread", None)
 
     def test(self):
-        for mock_data in self.mocks:
-            print(f"Testing {self.prompt.format(**mock_data)}")
+        if self.time == None and self.target == None and self.spread == None:
+            return
+        for mock_file, mock_data in self.mocks.items():
+            print(f"For {mock_file}")
+            args = {
+                "prompt": self.prompt.format(**mock_data),
+                "engine": self.engine,
+                "temperature": self.temperature,
+                "calls": self.calls,
+                "key": self.key
+            }
+            embeddings = get_embeddings(dict=args)
+            if self.spread is not None:
+                spread = get_similarity_score(embeddings, 8)
+                print("SPREAD : ", end="")
+                if spread < self.spread:
+                    print_color("OKGREEN", "PASSED")
+                else:
+                    print_color("FAIL", "FAILED")
+            if self.target is not None:
+                distance = get_avg_embeddings_distance(embeddings, self.target.get("text"))
+                print("TARGET : ", end="")
+                if distance <= self.target.get("max"):
+                    print_color("OKGREEN", "PASSED")
+                else:
+                    print_color("FAIL", "FAILED")
+
+
 
     def __check_prompt(self, prompt):
         required_fields = set(["name", "prompt", "calls"])
@@ -35,6 +61,7 @@ class TestCase:
         if "mock" in prompt:
             if not isinstance(prompt.get("mock"), list):
                 raise (Exception("Mocks should be a list object"))
+        
 
     def __set_prompt(self, prompt):
         prompt_obj = prompt.get("prompt")
@@ -55,7 +82,8 @@ class TestCase:
             )
 
     def __set_mocks(self, prompt) -> list:
-        mock_data = []
+        mock_data = {}
+        print("Prompt", self.name)
         for mock in prompt.get("mock", []):
             if "file" not in mock:
                 raise (Exception(f"Missing file field in mock for {self.name}"))
@@ -66,7 +94,7 @@ class TestCase:
                         f"Mock file should be JSON. Got {file_name[file_name.rfind('.'):]} in {file_name}"
                     )
                 )
-            mock_data.append(read_json(file_name))
+            mock_data[file_name] = read_json(file_name)
         return mock_data
 
     def _set_target(self, prompt):
@@ -99,5 +127,3 @@ class TestCase:
                 str_object += f"{attr}: {value}\n"
 
         return str_object
-
-    
