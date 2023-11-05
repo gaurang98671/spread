@@ -7,7 +7,7 @@ from utils import (
     read_yaml,
     print_color,
     get_embeddings,
-    get_avg_embeddings_distance
+    get_avg_embeddings_distance,
 )
 import copy
 from TestCase import TestCase
@@ -37,16 +37,17 @@ def spread_controller(args):
 
     print(f"{bold('Spread')}: {score}")
 
+
 def compare_controller(args):
     call_embeddings, _ = get_embeddings(args=args)
     avg_distance = get_avg_embeddings_distance(call_embeddings, args.target)
     print(f"{bold('Distance')} : {avg_distance}")
 
+
 def test_controller(args):
     test_config_data = read_yaml(args.file)
 
     for section in test_config_data:
-        
         print_color("BOLD", section)
         print("-" * 50)
         for prompts in test_config_data.get(section, []):

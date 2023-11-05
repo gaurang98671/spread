@@ -1,5 +1,12 @@
-from utils import read_json, print_color, get_embeddings, get_avg_embeddings_distance, get_similarity_score
-import os 
+from utils import (
+    read_json,
+    print_color,
+    get_embeddings,
+    get_avg_embeddings_distance,
+    get_similarity_score,
+)
+import os
+
 
 class TestCase:
     def __init__(self, prompt) -> None:
@@ -21,7 +28,7 @@ class TestCase:
     def run_test_case(self):
         if self.time == None and self.target == None and self.spread == None:
             return
-        
+
         if len(self.mocks) != 0:
             for mock_file, mock_data in self.mocks.items():
                 print(f"For {mock_file}")
@@ -30,20 +37,19 @@ class TestCase:
                     "engine": self.engine,
                     "temperature": self.temperature,
                     "calls": self.calls,
-                    "key": self.key
+                    "key": self.key,
                 }
                 self.display_results(args)
         else:
             args = {
-                    "prompt": self.prompt,
-                    "engine": self.engine,
-                    "temperature": self.temperature,
-                    "calls": self.calls,
-                    "key": self.key
-                }
+                "prompt": self.prompt,
+                "engine": self.engine,
+                "temperature": self.temperature,
+                "calls": self.calls,
+                "key": self.key,
+            }
             self.display_results(args)
 
-        
     def display_results(self, args):
         embeddings, avg_time_per_call = get_embeddings(dict=args)
         if self.spread is not None:
@@ -53,7 +59,7 @@ class TestCase:
                 print_color("OKGREEN", "PASSED")
             else:
                 print_color("FAIL", "FAILED")
-        
+
         if self.target is not None:
             distance = get_avg_embeddings_distance(embeddings, self.target.get("text"))
             print("TARGET : ", end="")
@@ -61,7 +67,7 @@ class TestCase:
                 print_color("OKGREEN", "PASSED")
             else:
                 print_color("FAIL", "FAILED")
-        
+
         if self.time is not None:
             print("TIME : ", end="")
             if avg_time_per_call <= self.time:
@@ -82,7 +88,6 @@ class TestCase:
         if "mock" in prompt:
             if not isinstance(prompt.get("mock"), list):
                 raise (Exception("Mocks should be a list object"))
-        
 
     def __set_prompt(self, prompt):
         prompt_obj = prompt.get("prompt")

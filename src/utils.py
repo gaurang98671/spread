@@ -6,6 +6,7 @@ import yaml
 import json
 import time
 
+
 def get_distance(p1, p2):
     if len(p1) != len(p2):
         raise (Exception(f"Incorrect dimensions p1: {len(p1)} p2: {len(p2)}"))
@@ -30,11 +31,12 @@ def get_center(points):
     center = points[center_index]
     return center
 
+
 def get_avg_embeddings_distance(embeddings, target_text):
     target_embeddings = generate_vector(target_text)
-    return sum(
-        [get_distance(target_embeddings, x) for x in embeddings]
-    ) / len(embeddings)
+    return sum([get_distance(target_embeddings, x) for x in embeddings]) / len(
+        embeddings
+    )
 
 
 def generate_vector(data, engine="text-embedding-ada-002"):
@@ -63,7 +65,7 @@ def call_open_ai(
             time_per_call_in_seconds.append(end_time - start_time)
             response_text = response["choices"][0]["text"].replace("\n", "")
         except Exception as e:
-            raise(Exception("Failed to called openai. Check log for err messagee"))
+            raise (Exception("Failed to called openai. Check log for err messagee"))
 
         # Store logs
         if log_prefix:
@@ -76,7 +78,11 @@ def call_open_ai(
         outputs.append(tuple(embeddings))
     print("")
 
-    return outputs, response_text, sum(time_per_call_in_seconds)/len(time_per_call_in_seconds)
+    return (
+        outputs,
+        response_text,
+        sum(time_per_call_in_seconds) / len(time_per_call_in_seconds),
+    )
 
 
 def bold(text):
@@ -84,22 +90,22 @@ def bold(text):
     reset_text = "\033[0m"
     return bold_text + text + reset_text
 
+
 def print_color(color, text):
     colors = {
-        "HEADER":'\033[95m',
-        "OKBLUE":'\033[94m',
-        "OKCYAN":'\033[96m',
-        "OKGREEN":'\033[92m',
-        "WARNING":'\033[93m',
-        "FAIL":'\033[91m',
-        "ENDC":'\033[0m',
-        "BOLD":'\033[1m',
-        "UNDERLINE": '\033[4m'
+        "HEADER": "\033[95m",
+        "OKBLUE": "\033[94m",
+        "OKCYAN": "\033[96m",
+        "OKGREEN": "\033[92m",
+        "WARNING": "\033[93m",
+        "FAIL": "\033[91m",
+        "ENDC": "\033[0m",
+        "BOLD": "\033[1m",
+        "UNDERLINE": "\033[4m",
     }
 
     print(f"{colors.get(color)}{text}{colors.get('ENDC')}")
 
-    
 
 def create_directory_if_not_exists(directory_name, verbose=False):
     if not os.path.exists(directory_name):
@@ -128,9 +134,10 @@ def read_json(file_name):
     json_dict = json.loads(json_text)
     return json_dict
 
+
 def get_embeddings(args=None, dict=None):
     if args:
-        call_embeddings, _, avg_time_per_call= call_open_ai(
+        call_embeddings, _, avg_time_per_call = call_open_ai(
             args.prompt,
             engine=args.engine,
             temperature=float(args.temperature),
@@ -145,9 +152,7 @@ def get_embeddings(args=None, dict=None):
             engine=dict.get("engine"),
             temperature=float(dict.get("temperature")),
             calls=int(dict.get("calls")),
-            openai_api_key=dict.get("key")
+            openai_api_key=dict.get("key"),
         )
 
-    
-    
     return call_embeddings, avg_time_per_call
