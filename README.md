@@ -2,8 +2,7 @@
 ![Static Badge](https://img.shields.io/badge/Version-0.0.1-green)
 ![Static Badge](https://img.shields.io/badge/Code_Style-black-black)
 
-# Table of Contents
-- [Table of Contents](#table-of-contents)
+# Table of Contents <!-- omit from toc --> 
 - [Spread v0.0.1](#spread-v001)
   - [Getting started](#getting-started)
   - [Subcommands](#subcommands)
