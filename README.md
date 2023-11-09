@@ -2,10 +2,16 @@
 ![Static Badge](https://img.shields.io/badge/Version-0.0.1-green)
 ![Static Badge](https://img.shields.io/badge/Code_Style-black-black)
 
+- [Spread vddd0.0.1](#spread-vddd001)
+  - [Getting started](#getting-started)
+  - [Subcommands](#subcommands)
+    - [Spread](#spread)
+    - [Compare](#compare)
+    - [Creating Test Cases](#creating-test-cases)
+  - [Options](#options)
+  - [Example](#example)
 
-
-
-# Prompt Quality Testing CLI Tool
+# Spread vddd0.0.1
 This CLI tool operates by repeatedly prompting an LLM with the same input, capturing embeddings of the generated responses. It computes the center point within this embedding space and calculates the average Euclidean distance from the center to each response, providing a concise measure of response spread.
 
 ## Getting started
