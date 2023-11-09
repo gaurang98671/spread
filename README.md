@@ -2,7 +2,9 @@
 ![Static Badge](https://img.shields.io/badge/Version-0.0.1-green)
 ![Static Badge](https://img.shields.io/badge/Code_Style-black-black)
 
-- [Spread vddd0.0.1](#spread-vddd001)
+# Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Spread v0.0.1](#spread-v001)
   - [Getting started](#getting-started)
   - [Subcommands](#subcommands)
     - [Spread](#spread)
@@ -11,7 +13,7 @@
   - [Options](#options)
   - [Example](#example)
 
-# Spread vddd0.0.1
+# Spread v0.0.1
 This CLI tool operates by repeatedly prompting an LLM with the same input, capturing embeddings of the generated responses. It computes the center point within this embedding space and calculates the average Euclidean distance from the center to each response, providing a concise measure of response spread.
 
 ## Getting started
