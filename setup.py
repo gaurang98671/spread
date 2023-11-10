@@ -1,10 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
-setup(
-    name="spread",
-    version="0.0.1",
-    description="Prompt quality testing tool.",
-    author="Gaurang Pawar",
-    author_email="pawargaurang1212@gmail.com",
-    packages=['src']
-)
+if __name__ == "__main__":
+    setup()
