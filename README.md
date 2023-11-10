@@ -1,6 +1,8 @@
 ![Static Badge](https://img.shields.io/badge/License-MIT-blue)
 ![Static Badge](https://img.shields.io/badge/Version-0.0.1-green)
 ![Static Badge](https://img.shields.io/badge/Code_Style-black-black)
+![Static Badge](https://img.shields.io/badge/Contributors-1-brown)
+
 
 # Table of Contents <!-- omit from toc --> 
 - [Spread v0.0.1](#spread-v001)
