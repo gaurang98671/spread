@@ -1,6 +1,5 @@
 import os
 
-
 def common_middleware(args):
     input_file = args.file
     prompt = args.prompt
