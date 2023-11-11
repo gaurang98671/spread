@@ -26,13 +26,21 @@ class TestCase:
         self.target = self._set_target(prompt) if "target" in prompt else None
         self.spread = prompt.get("spread", None)
 
-    def run_test_case(self):
+    def run_test_case(self) -> (dict, int):
         failure_stats = []
 
         if self.time == None and self.target == None and self.spread == None:
-            print_color("WARNING", "No test criteria were found")
+            print_color("WARNING", "No test criteria were found\n")
             return {}, 0
         
+        print_color("BOLD", "Prompt : ", end="")
+        print(self.prompt, end="\n")
+
+        if len(self.mocks) == 0:
+            print_color("WARNING", "No mock data found. Running test for prompt\n")
+        else:
+            print("")
+
         if len(self.mocks) > 0:
             for mock_file, mock_data in self.mocks.items():
                 print(f"For {mock_file}")
@@ -125,7 +133,6 @@ class TestCase:
 
     def __set_mocks(self, prompt:dict) -> list:
         mock_data = {}
-        print("Prompt", self.name)
         for mock in prompt.get("mock", []):
             if "file" not in mock:
                 raise (Exception(f"Missing file field in mock for {self.name}"))

@@ -90,7 +90,7 @@ def bold(text):
     return bold_text + text + reset_text
 
 
-def print_color(color, text):
+def print_color(color, text, end='\n'):
     colors = {
         "HEADER": "\033[95m",
         "OKBLUE": "\033[94m",
@@ -103,7 +103,7 @@ def print_color(color, text):
         "UNDERLINE": "\033[4m",
     }
 
-    print(f"{colors.get(color)}{text}{colors.get('ENDC')}")
+    print(f"{colors.get(color)}{text}{colors.get('ENDC')}", end=end)
 
 
 def create_directory_if_not_exists(directory_name, verbose=False):

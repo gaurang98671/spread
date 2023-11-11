@@ -48,7 +48,7 @@ def compare_controller(args: Namespace) -> None:
 def test_controller(args: Namespace) -> None:
     test_config_data = read_yaml(args.file)
     failed_count = 0
-    for section in test_config_data:
+    for index, section in enumerate(test_config_data):
         print_color("BOLD", section)
         print("-" * 50)
         for prompts in test_config_data.get(section, []):
@@ -56,6 +56,8 @@ def test_controller(args: Namespace) -> None:
                 p = TestCase(sub_prompt)
                 status, failures = p.run_test_case()
                 failed_count += failures
+        if index < len(test_config_data) - 1:
+            print("")
 
     if failed_count > 0:
         print_color("FAIL", f"Total failures : {failed_count}")
