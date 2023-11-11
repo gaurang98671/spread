@@ -76,7 +76,6 @@ def call_open_ai(
 
         embeddings = generate_vector(data=response_text)
         outputs.append(tuple(embeddings))
-    print("")
 
     return (
         outputs,

@@ -36,7 +36,6 @@ def handle_command(args: Namespace, controller: Callable[..., None], middlewares
 def spread_controller(args: Namespace) -> None:
     call_embeddings, _ = get_embeddings(args=args)
     score = get_similarity_score(call_embeddings)
-
     print(f"{bold('Spread')}: {score}")
 
 
@@ -57,9 +56,6 @@ def test_controller(args: Namespace) -> None:
                 p = TestCase(sub_prompt)
                 status, failures = p.run_test_case()
                 failed_count += failures
-
-        print("")
-
 
     if failed_count > 0:
         print_color("FAIL", f"Total failures : {failed_count}")

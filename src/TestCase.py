@@ -44,6 +44,7 @@ class TestCase:
                     "key": self.key,
                 }
                 failure_stats.append(self.display_results(args))
+                print("")
         else:
             # Just run for prompt if no mock data is found
             args = {
