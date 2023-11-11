@@ -44,7 +44,7 @@ def generate_vector(data, engine="text-embedding-ada-002"):
     return response["data"][0]["embedding"]
 
 
-# TODO : Add support for chat complemetion models like gpt-3.5-turbo
+# TODO : Add support for chat complemetion models like gpt-3.5-turbo and gpt-4
 def call_open_ai(
     prompt, engine, temperature, calls, openai_api_key, log_prefix=None, verbose=False
 ):

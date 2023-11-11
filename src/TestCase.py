@@ -18,7 +18,7 @@ class TestCase:
         self.calls = prompt.get("calls", 1)
         self.engine = prompt.get("engine", "text-davinci-003")
         self.temperature = prompt.get("temperature", 0.0)
-        self.key = prompt.get("key", os.environ.get("OPENAI_API_KEY"))
+        self.key = self._set_api_key(prompt)
 
         # Set criteria
         self.time = prompt.get("time", None)
@@ -26,10 +26,13 @@ class TestCase:
         self.spread = prompt.get("spread", None)
 
     def run_test_case(self):
-        if self.time == None and self.target == None and self.spread == None:
-            return
+        failure_stats = []
 
-        if len(self.mocks) != 0:
+        if self.time == None and self.target == None and self.spread == None:
+            print_color("WARNING", "No test criteria were found")
+            return {}, 0
+        
+        if len(self.mocks) > 0:
             for mock_file, mock_data in self.mocks.items():
                 print(f"For {mock_file}")
                 args = {
@@ -39,8 +42,9 @@ class TestCase:
                     "calls": self.calls,
                     "key": self.key,
                 }
-                self.display_results(args)
+                failure_stats.append(self.display_results(args))
         else:
+            # Just run for prompt if no mock data is found
             args = {
                 "prompt": self.prompt,
                 "engine": self.engine,
@@ -48,10 +52,15 @@ class TestCase:
                 "calls": self.calls,
                 "key": self.key,
             }
-            self.display_results(args)
+            failure_stats.append(self.display_results(args))
+
+        return failure_stats, sum([len(x) for x in failure_stats])
+
 
     def display_results(self, args):
         embeddings, avg_time_per_call = get_embeddings(dict=args)
+        failure_stats = {}
+
         if self.spread is not None:
             spread = get_similarity_score(embeddings, 8)
             print("SPREAD : ", end="")
@@ -59,21 +68,26 @@ class TestCase:
                 print_color("OKGREEN", "PASSED")
             else:
                 print_color("FAIL", "FAILED")
+                failure_stats.update({"spread": spread})
 
         if self.target is not None:
             distance = get_avg_embeddings_distance(embeddings, self.target.get("text"))
             print("TARGET : ", end="")
-            if distance <= self.target.get("max"):
+            if distance < self.target.get("max"):
                 print_color("OKGREEN", "PASSED")
             else:
                 print_color("FAIL", "FAILED")
+                failure_stats.update({"target":distance})
 
         if self.time is not None:
             print("TIME : ", end="")
-            if avg_time_per_call <= self.time:
+            if avg_time_per_call < self.time:
                 print_color("OKGREEN", "PASSED")
             else:
                 print_color("FAIL", "FAILED")
+                failure_stats.update({"time":avg_time_per_call})
+
+        return failure_stats
 
     def __check_prompt(self, prompt):
         required_fields = set(["name", "prompt", "calls"])
@@ -140,6 +154,14 @@ class TestCase:
             return {"text": text, "max": target.get("max")}
 
         return {"text": target.get("text"), "max": target.get("max")}
+
+    def _set_api_key(self, prompt):
+        if "key" in prompt:
+            return prompt.get("key")
+        elif "OPENAI_API_KEY" in os.environ:
+            return os.environ.get("OPENAI_API_KEY")
+        
+        raise(Exception("No 'OPENAI_API_KEY' was found in environment vars"))
 
     def __str__(self) -> str:
         attrs = [

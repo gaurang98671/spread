@@ -11,6 +11,7 @@ from utils import (
 )
 import copy
 from TestCase import TestCase
+import sys
 
 
 def handle_command(args, controller, middlewares):
@@ -46,13 +47,21 @@ def compare_controller(args):
 
 def test_controller(args):
     test_config_data = read_yaml(args.file)
-
+    failed_count = 0
     for section in test_config_data:
         print_color("BOLD", section)
         print("-" * 50)
         for prompts in test_config_data.get(section, []):
             for sub_prompt in prompts["prompts"]:
                 p = TestCase(sub_prompt)
-                p.run_test_case()
+                status, failures = p.run_test_case()
+                failed_count += failures
 
         print("*" * 50)
+
+
+    if failed_count > 0:
+        print_color("FAIL", f"Total failures : {failed_count}")
+        sys.exit(1)
+    
+

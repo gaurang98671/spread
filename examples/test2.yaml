@@ -1,0 +1,12 @@
+user:
+  - name: User prompts
+    prompts:
+      - name: Summarize user profile prompt
+        calls: 2
+        temperature: 0.5
+        prompt:
+          file: ../examples/user_prompt.txt
+        mock:
+          - file: ../examples/mock1.json
+          - file: ../examples/mock2.json
+       
