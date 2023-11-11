@@ -32,7 +32,7 @@ def get_center(points):
     return center
 
 
-def get_avg_embeddings_distance(embeddings, target_text):
+def get_avg_embeddings_distance(embeddings, target_text) -> float:
     target_embeddings = generate_vector(target_text)
     return sum([get_distance(target_embeddings, x) for x in embeddings]) / len(
         embeddings

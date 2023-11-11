@@ -1,6 +1,8 @@
 import os
+from argparse import Namespace, ArgumentParser
+from typing import Optional
 
-def common_middleware(args):
+def common_middleware(args: Namespace) -> Optional[str]:
     input_file = args.file
     prompt = args.prompt
     np = args.nprompt
@@ -34,10 +36,7 @@ def common_middleware(args):
     return None
 
 
-def compare_middleware(args):
-    err = common_middleware(args)
-    if err != None:
-        return err
+def compare_middleware(args: Namespace) -> None:
     target = args.target
 
     if target.endswith(".txt"):
@@ -48,10 +47,10 @@ def compare_middleware(args):
             args.target = f.read()
             f.close()
         except FileExistsError as e:
-            return f"{target} file not found"
+            raise Exception(f"{target} file not found")
 
 
-def add_common_arguments(parser):
+def add_common_arguments(parser: ArgumentParser) -> ArgumentParser:
     parser.add_argument("-f", "--file", help="Prompt text file")
     parser.add_argument("-n", "--calls", default=10, help="Number of calls to LLM")
     parser.add_argument("-v", "--verbose", action="store_true", help="Verbose output")

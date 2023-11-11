@@ -6,10 +6,11 @@ from utils import (
     get_similarity_score,
 )
 import os
+from argparse import Namespace
 
 
 class TestCase:
-    def __init__(self, prompt) -> None:
+    def __init__(self, prompt: dict) -> None:
         self.__check_prompt(prompt)
 
         self.name = prompt.get("name")
@@ -57,7 +58,7 @@ class TestCase:
         return failure_stats, sum([len(x) for x in failure_stats])
 
 
-    def display_results(self, args):
+    def display_results(self, args: Namespace):
         embeddings, avg_time_per_call = get_embeddings(dict=args)
         failure_stats = {}
 
@@ -89,7 +90,7 @@ class TestCase:
 
         return failure_stats
 
-    def __check_prompt(self, prompt):
+    def __check_prompt(self, prompt: dict) -> None:
         required_fields = set(["name", "prompt", "calls"])
 
         # Check required fields
@@ -103,7 +104,7 @@ class TestCase:
             if not isinstance(prompt.get("mock"), list):
                 raise (Exception("Mocks should be a list object"))
 
-    def __set_prompt(self, prompt):
+    def __set_prompt(self, prompt: dict) -> None:
         prompt_obj = prompt.get("prompt")
         if "text" in prompt_obj:
             return prompt_obj.get("text")
@@ -121,7 +122,7 @@ class TestCase:
                 Exception(f"No 'text' or 'file' field was found for prompt {self.name}")
             )
 
-    def __set_mocks(self, prompt) -> list:
+    def __set_mocks(self, prompt:dict) -> list:
         mock_data = {}
         print("Prompt", self.name)
         for mock in prompt.get("mock", []):
@@ -137,7 +138,7 @@ class TestCase:
             mock_data[file_name] = read_json(file_name)
         return mock_data
 
-    def _set_target(self, prompt):
+    def _set_target(self, prompt: dict):
         target = prompt.get("target")
 
         if "file" not in target and "text" not in target:
@@ -155,7 +156,7 @@ class TestCase:
 
         return {"text": target.get("text"), "max": target.get("max")}
 
-    def _set_api_key(self, prompt):
+    def _set_api_key(self, prompt: dict) -> str:
         if "key" in prompt:
             return prompt.get("key")
         elif "OPENAI_API_KEY" in os.environ:

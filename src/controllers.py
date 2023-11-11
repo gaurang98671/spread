@@ -12,9 +12,9 @@ from utils import (
 import copy
 from TestCase import TestCase
 import sys
+from argparse import NameSpace
 
-
-def handle_command(args, controller, middlewares):
+def handle_command(args: NameSpace, controller: function, middlewares: [function]):
     # Handle all middlewares
     for middleware in middlewares:
         err = middleware(args=args)
@@ -32,20 +32,20 @@ def handle_command(args, controller, middlewares):
         controller(args)
 
 
-def spread_controller(args):
+def spread_controller(args: NameSpace) -> None:
     call_embeddings, _ = get_embeddings(args=args)
     score = get_similarity_score(call_embeddings)
 
     print(f"{bold('Spread')}: {score}")
 
 
-def compare_controller(args):
+def compare_controller(args: NameSpace) -> None:
     call_embeddings, _ = get_embeddings(args=args)
     avg_distance = get_avg_embeddings_distance(call_embeddings, args.target)
     print(f"{bold('Distance')} : {avg_distance}")
 
 
-def test_controller(args):
+def test_controller(args: NameSpace) -> None:
     test_config_data = read_yaml(args.file)
     failed_count = 0
     for section in test_config_data:
