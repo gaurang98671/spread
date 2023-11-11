@@ -12,9 +12,10 @@ from utils import (
 import copy
 from TestCase import TestCase
 import sys
-from argparse import NameSpace
+from argparse import Namespace
+from typing import Callable, List
 
-def handle_command(args: NameSpace, controller: function, middlewares: [function]):
+def handle_command(args: Namespace, controller: Callable[..., None], middlewares: List[Callable[..., None]]):
     # Handle all middlewares
     for middleware in middlewares:
         err = middleware(args=args)
@@ -32,20 +33,20 @@ def handle_command(args: NameSpace, controller: function, middlewares: [function
         controller(args)
 
 
-def spread_controller(args: NameSpace) -> None:
+def spread_controller(args: Namespace) -> None:
     call_embeddings, _ = get_embeddings(args=args)
     score = get_similarity_score(call_embeddings)
 
     print(f"{bold('Spread')}: {score}")
 
 
-def compare_controller(args: NameSpace) -> None:
+def compare_controller(args: Namespace) -> None:
     call_embeddings, _ = get_embeddings(args=args)
     avg_distance = get_avg_embeddings_distance(call_embeddings, args.target)
     print(f"{bold('Distance')} : {avg_distance}")
 
 
-def test_controller(args: NameSpace) -> None:
+def test_controller(args: Namespace) -> None:
     test_config_data = read_yaml(args.file)
     failed_count = 0
     for section in test_config_data:
@@ -57,7 +58,7 @@ def test_controller(args: NameSpace) -> None:
                 status, failures = p.run_test_case()
                 failed_count += failures
 
-        print("*" * 50)
+        print("")
 
 
     if failed_count > 0:
