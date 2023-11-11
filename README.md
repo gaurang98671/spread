@@ -1,7 +1,7 @@
 ![Static Badge](https://img.shields.io/badge/License-MIT-blue)
 ![Static Badge](https://img.shields.io/badge/Version-0.0.1-green)
 ![Static Badge](https://img.shields.io/badge/Code_Style-black-black)
-![Static Badge](https://img.shields.io/badge/Contributors-1-brown)
+![Static Badge](https://img.shields.io/badge/Status-Work_In_Progress-brown)
 
 
 # Table of Contents <!-- omit from toc --> 
@@ -10,12 +10,12 @@
   - [Subcommands](#subcommands)
     - [Spread](#spread)
     - [Compare](#compare)
-    - [Creating Test Cases](#creating-test-cases)
+    - [Test](#test)
   - [Options](#options)
   - [Example](#example)
     - [**Spread**](#spread-1)
     - [**Compare**](#compare-1)
-    - [**Test**](#test)
+    - [**Test**](#test-1)
 
 # Spread v0.0.1
 This CLI tool operates by repeatedly prompting an LLM with the same input, capturing embeddings of the generated responses. It computes the center point within this embedding space and calculates the average Euclidean distance from the center to each response, providing a concise measure of response spread.
@@ -41,8 +41,9 @@ python main.py spread [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--tempe
 python main.py compare [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temperature TEMPERATURE] [--engine ENGINE] -target [text/.txt file]
 ```
 
-### Creating Test Cases
+### Test
 ```
+python main.py test <file name>
 ```
 
 ## Options
@@ -60,7 +61,6 @@ python main.py compare [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temp
 | -np | --nprompt      | Pass in multiple prompt files    |
 
 ## Example
-To check the spread of LLM outputs for a given prompt, you can use the spread subcommand with appropriate options
 
 ### **Spread**
 ```
