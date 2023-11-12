@@ -42,6 +42,7 @@ python main.py compare [-h] [-f FILE] [-n CALLS] [--key KEY] [-p PROMPT] [--temp
 ```
 
 ### Test
+```test``` command takes a .yaml file containing all test criteria. It will exit with status code **1** if any of the criteria fails.
 ```
 python main.py test <file name>
 ```
