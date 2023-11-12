@@ -4,6 +4,9 @@
 
 ## Project structure
 
+## Flow
+![Alt text](../../examples/flow.png)
+
 ## How to add new CLI command?
 
 ## How to add new test case criteria?
