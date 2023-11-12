@@ -24,7 +24,7 @@
 
 
 
-### Testing functionality
+### Testing Functionality
 <!-- gaurang98671(Gaurang pawar) -->
 <div style="display: flex; align-items: center;">
   <img src="https://github.com/gaurang98671.png" alt="Gaurang Pawar" 
@@ -33,7 +33,7 @@
   <a href="https://github.com/gaurang98671" style="margin-left: 10px; font-size: 19">Gaurang Pawar</a>
 </div>
 
-### Core Math functions
+### Core Math Functions
 
 <!-- gaurang98671(Gaurang pawar) -->
 <div style="display: flex; align-items: center;">
