@@ -1,13 +1,13 @@
 from utils import (
     read_json,
     print_color,
-    get_embeddings,
+    get_responses_embeddings_and_avg_time_per_call,
     get_avg_embeddings_distance,
     get_similarity_score,
 )
 import os
 from argparse import Namespace
-
+import re
 
 class TestCase:
     def __init__(self, prompt: dict) -> None:
@@ -25,6 +25,7 @@ class TestCase:
         self.time = prompt.get("time", None)
         self.target = self._set_target(prompt) if "target" in prompt else None
         self.spread = prompt.get("spread", None)
+        self.regex = prompt.get("regex", None)
 
     def run_test_case(self) -> (dict, int):
         failure_stats = []
@@ -49,7 +50,7 @@ class TestCase:
                     "engine": self.engine,
                     "temperature": self.temperature,
                     "calls": self.calls,
-                    "key": self.key,
+                    "key": self.key
                 }
                 failure_stats.append(self.display_results(args))
                 print("")
@@ -68,7 +69,7 @@ class TestCase:
 
 
     def display_results(self, args: Namespace):
-        embeddings, avg_time_per_call = get_embeddings(dict=args)
+        responses, embeddings, avg_time_per_call = get_responses_embeddings_and_avg_time_per_call(dict=args)
         failure_stats = {}
 
         if self.spread is not None:
@@ -96,6 +97,22 @@ class TestCase:
             else:
                 print_color("FAIL", "FAILED")
                 failure_stats.update({"time":avg_time_per_call})
+
+        if self.regex is not None:
+            pattern = re.compile(self.regex)
+            fails = []
+            for response in responses:
+                if not pattern.match(response):
+                    fails.append(response)
+            
+            print("REGEX : ", end="")
+            
+            if len(fails) == 0:
+                print_color("OKGREEN", "PASSED")
+            else:
+                print_color("FAIL", "FAILED")
+                failure_stats.update({"regex": len(fails)})
+
 
         return failure_stats
 

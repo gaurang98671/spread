@@ -6,7 +6,7 @@ from utils import (
     get_distance,
     read_yaml,
     print_color,
-    get_embeddings,
+    get_responses_embeddings_and_avg_time_per_call,
     get_avg_embeddings_distance,
 )
 import copy
@@ -34,13 +34,13 @@ def handle_command(args: Namespace, controller: Callable[..., None], middlewares
 
 
 def spread_controller(args: Namespace) -> None:
-    call_embeddings, _ = get_embeddings(args=args)
+    _, call_embeddings, _ = get_responses_embeddings_and_avg_time_per_call(args=args)
     score = get_similarity_score(call_embeddings)
     print(f"{bold('Spread')}: {score}")
 
 
 def compare_controller(args: Namespace) -> None:
-    call_embeddings, _ = get_embeddings(args=args)
+    _, call_embeddings, _ = get_responses_embeddings_and_avg_time_per_call(args=args)
     avg_distance = get_avg_embeddings_distance(call_embeddings, args.target)
     print(f"{bold('Distance')} : {avg_distance}")
 

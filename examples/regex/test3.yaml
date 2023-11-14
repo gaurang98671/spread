@@ -1,0 +1,10 @@
+regex_check:
+  - name: Regex check prompt
+    prompts:
+      - name: Check regex
+        calls: 2
+        temperature: 0
+        prompt:
+          file: ../examples/regex/regex_prompt.txt
+        time: 2
+        regex: "<>"

@@ -49,7 +49,8 @@ def call_open_ai(
     prompt, engine, temperature, calls, openai_api_key, log_prefix=None, verbose=False
 ):
     openai.api_key = openai_api_key
-    outputs = []
+    output_embeddings = []
+    output_text = []
     time_per_call_in_seconds = []
 
     for i in range(int(calls)):
@@ -75,13 +76,37 @@ def call_open_ai(
             log_file.close()
 
         embeddings = generate_vector(data=response_text)
-        outputs.append(tuple(embeddings))
+        output_embeddings.append(tuple(embeddings))
+        output_text.append(response_text)
 
     return (
-        outputs,
-        response_text,
+        output_text,
+        output_embeddings,
         sum(time_per_call_in_seconds) / len(time_per_call_in_seconds),
     )
+
+
+def get_responses_embeddings_and_avg_time_per_call(args=None, dict=None):
+    if args:
+        responses, call_embeddings, avg_time_per_call = call_open_ai(
+            args.prompt,
+            engine=args.engine,
+            temperature=float(args.temperature),
+            calls=int(args.calls),
+            openai_api_key=args.key,
+            log_prefix=args.log,
+            verbose=args.verbose,
+        )
+    elif dict:
+        responses, call_embeddings, avg_time_per_call = call_open_ai(
+            dict.get("prompt"),
+            engine=dict.get("engine"),
+            temperature=float(dict.get("temperature")),
+            calls=int(dict.get("calls")),
+            openai_api_key=dict.get("key"),
+        )
+
+    return responses, call_embeddings, avg_time_per_call
 
 
 def bold(text):
@@ -134,24 +159,3 @@ def read_json(file_name):
     return json_dict
 
 
-def get_embeddings(args=None, dict=None):
-    if args:
-        call_embeddings, _, avg_time_per_call = call_open_ai(
-            args.prompt,
-            engine=args.engine,
-            temperature=float(args.temperature),
-            calls=int(args.calls),
-            openai_api_key=args.key,
-            log_prefix=args.log,
-            verbose=args.verbose,
-        )
-    elif dict:
-        call_embeddings, _, avg_time_per_call = call_open_ai(
-            dict.get("prompt"),
-            engine=dict.get("engine"),
-            temperature=float(dict.get("temperature")),
-            calls=int(dict.get("calls")),
-            openai_api_key=dict.get("key"),
-        )
-
-    return call_embeddings, avg_time_per_call

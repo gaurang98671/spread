@@ -9,4 +9,4 @@ user:
         mock:
           - file: ../examples/mock1.json
           - file: ../examples/mock2.json
-       
+        time: 2

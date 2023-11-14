@@ -1,0 +1,1 @@
+Just return me "<>" and nothing else. I repeate just that characters and nothing else.
