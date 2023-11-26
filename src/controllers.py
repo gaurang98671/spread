@@ -1,15 +1,13 @@
 from utils import (
-    call_open_ai,
-    get_similarity_score,
+    get_spread,
     bold,
-    generate_vector,
-    get_distance,
     read_yaml,
     print_color,
     get_responses_embeddings_and_avg_time_per_call,
     get_avg_embeddings_distance,
+    get_jaro_similarity
 )
-import copy
+from copy import deepcopy
 from TestCase import TestCase
 import sys
 from argparse import Namespace
@@ -26,7 +24,7 @@ def handle_command(args: Namespace, controller: Callable[..., None], middlewares
     if "prompt" in args:
         prompts = args.prompt
         for prompt in prompts:
-            args_copy = copy.deepcopy(args)
+            args_copy = deepcopy(args)
             args_copy.prompt = prompt
             controller(args_copy)
     else:
@@ -35,14 +33,21 @@ def handle_command(args: Namespace, controller: Callable[..., None], middlewares
 
 def spread_controller(args: Namespace) -> None:
     _, call_embeddings, _ = get_responses_embeddings_and_avg_time_per_call(args=args)
-    score = get_similarity_score(call_embeddings)
+    score = get_spread(call_embeddings)
     print(f"{bold('Spread')}: {score}")
 
 
 def compare_controller(args: Namespace) -> None:
-    _, call_embeddings, _ = get_responses_embeddings_and_avg_time_per_call(args=args)
-    avg_distance = get_avg_embeddings_distance(call_embeddings, args.target)
-    print(f"{bold('Distance')} : {avg_distance}")
+    responses, call_embeddings, _ = get_responses_embeddings_and_avg_time_per_call(args=args)
+
+    counter = 1
+    avg_similarity = 0
+    for response in responses:
+        similarity = get_jaro_similarity(response, args.target)
+        print(f"Response {counter}: {similarity}")
+        avg_similarity += similarity / len(responses)
+        counter += 1
+    print(f"{bold('Average similarity')} : {avg_similarity}")
 
 
 def test_controller(args: Namespace) -> None:
@@ -62,5 +67,3 @@ def test_controller(args: Namespace) -> None:
     if failed_count > 0:
         print_color("FAIL", f"Total failures : {failed_count}")
         sys.exit(1)
-    
-

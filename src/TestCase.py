@@ -2,8 +2,8 @@ from utils import (
     read_json,
     print_color,
     get_responses_embeddings_and_avg_time_per_call,
-    get_avg_embeddings_distance,
-    get_similarity_score,
+    get_jaro_similarity,
+    get_spread,
 )
 import os
 from argparse import Namespace
@@ -17,7 +17,8 @@ class TestCase:
         self.prompt = self.__set_prompt(prompt)
         self.mocks = self.__set_mocks(prompt)
         self.calls = prompt.get("calls", 1)
-        self.engine = prompt.get("engine", "text-davinci-003")
+        self.engine = prompt.get("engine", "text-embedding-ada-002")
+        self.model = prompt.get("model", "gpt-3.5-turbo")
         self.temperature = prompt.get("temperature", 0.0)
         self.key = self._set_api_key(prompt)
 
@@ -35,7 +36,7 @@ class TestCase:
             return {}, 0
         
         print_color("BOLD", "Prompt : ", end="")
-        print(self.prompt, end="\n")
+        print(self.name, end="\n")
 
         if len(self.mocks) == 0:
             print_color("WARNING", "No mock data found. Running test for prompt\n")
@@ -48,6 +49,7 @@ class TestCase:
                 args = {
                     "prompt": self.prompt.format(**mock_data),
                     "engine": self.engine,
+                    "model": self.model,
                     "temperature": self.temperature,
                     "calls": self.calls,
                     "key": self.key
@@ -59,6 +61,7 @@ class TestCase:
             args = {
                 "prompt": self.prompt,
                 "engine": self.engine,
+                "model": self.model,
                 "temperature": self.temperature,
                 "calls": self.calls,
                 "key": self.key,
@@ -73,26 +76,34 @@ class TestCase:
         failure_stats = {}
 
         if self.spread is not None:
-            spread = get_similarity_score(embeddings, 8)
+            spread = get_spread(embeddings, precesion=8)
             print("SPREAD : ", end="")
-            if spread < self.spread:
+            if spread <= self.spread:
                 print_color("OKGREEN", "PASSED")
             else:
                 print_color("FAIL", "FAILED")
                 failure_stats.update({"spread": spread})
 
         if self.target is not None:
-            distance = get_avg_embeddings_distance(embeddings, self.target.get("text"))
+            fails = []
+            target_text = self.target.get("text")
+            min_target_similarity = self.target.get("min")
+
+            for response in responses:
+                similarity = get_jaro_similarity(repr(response), repr(target_text))
+                if similarity < min_target_similarity:
+                    fails.append(response)
+
             print("TARGET : ", end="")
-            if distance < self.target.get("max"):
+            if len(fails) == 0:
                 print_color("OKGREEN", "PASSED")
             else:
                 print_color("FAIL", "FAILED")
-                failure_stats.update({"target":distance})
+                failure_stats.update({"target": fails})
 
         if self.time is not None:
             print("TIME : ", end="")
-            if avg_time_per_call < self.time:
+            if avg_time_per_call <= self.time:
                 print_color("OKGREEN", "PASSED")
             else:
                 print_color("FAIL", "FAILED")
@@ -169,17 +180,17 @@ class TestCase:
         if "file" not in target and "text" not in target:
             raise (Exception("Missing file or text field in target"))
 
-        if "max" not in target:
-            raise (Exception("Missing 'max' value in target"))
+        if "min" not in target:
+            raise (Exception("Missing 'min' value in target"))
 
         if "file" in target:
             file_name = target.get("file")
             file = open(file_name, "r")
             text = file.read()
             file.close()
-            return {"text": text, "max": target.get("max")}
+            return {"text": text, "min": target.get("min")}
 
-        return {"text": target.get("text"), "max": target.get("max")}
+        return {"text": target.get("text"), "min": target.get("min")}
 
     def _set_api_key(self, prompt: dict) -> str:
         if "key" in prompt:

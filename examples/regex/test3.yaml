@@ -8,3 +8,6 @@ regex_check:
           file: ../examples/regex/regex_prompt.txt
         time: 2
         regex: "<>"
+        target:
+            text: "<>\asdnaskjdnaijsdnijasnijdnn"
+            min: 1.0

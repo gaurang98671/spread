@@ -1,11 +1,12 @@
 import numpy as np
 import openai
+from openai import OpenAI
 from scipy.spatial import distance
 import os
 import yaml
 import json
 import time
-
+import jellyfish
 
 def get_distance(p1, p2):
     if len(p1) != len(p2):
@@ -17,7 +18,7 @@ def get_distance(p1, p2):
     return sum(dist) / len(dist)
 
 
-def get_similarity_score(points, precesion=3):
+def get_spread(points, precesion=3):
     center = get_center(points)
     distance = [get_distance(center, x) for x in points]
     score = (sum(distance) / len(distance)) * 10**4
@@ -39,16 +40,16 @@ def get_avg_embeddings_distance(embeddings, target_text) -> float:
     )
 
 
-def generate_vector(data, engine="text-embedding-ada-002"):
-    response = openai.Embedding.create(input=data, model=engine)
-    return response["data"][0]["embedding"]
+def generate_vector(openai_client, data, engine="text-embedding-ada-002"):
+    response = openai_client.embeddings.create(input=data, model=engine)
+    return response.data[0].embedding
 
 
 # TODO : Add support for chat complemetion models like gpt-3.5-turbo and gpt-4
 def call_open_ai(
-    prompt, engine, temperature, calls, openai_api_key, log_prefix=None, verbose=False
+    prompt, engine, model, temperature, calls, openai_api_key, log_prefix=None, verbose=False
 ):
-    openai.api_key = openai_api_key
+    openai_client = OpenAI(api_key=openai_api_key)
     output_embeddings = []
     output_text = []
     time_per_call_in_seconds = []
@@ -59,12 +60,20 @@ def call_open_ai(
 
         try:
             start_time = time.time()
-            response = openai.Completion.create(
-                engine=engine, temperature=temperature, prompt=prompt
+            response = openai_client.chat.completions.create(
+               model=model,
+               temperature=temperature,
+               messages=[
+                   {
+                       "role": "user",
+                       "content": prompt
+                   }
+               ],
             )
             end_time = time.time()
             time_per_call_in_seconds.append(end_time - start_time)
-            response_text = response["choices"][0]["text"].replace("\n", "")
+            response_text = response.choices[0].message.content
+
         except Exception as e:
             raise (Exception("Failed to called openai. Check log for err messagee"))
 
@@ -75,7 +84,7 @@ def call_open_ai(
             log_file.write(f"\nOpenAI response : {response_text}")
             log_file.close()
 
-        embeddings = generate_vector(data=response_text)
+        embeddings = generate_vector(openai_client, data=response_text, engine=engine)
         output_embeddings.append(tuple(embeddings))
         output_text.append(response_text)
 
@@ -85,12 +94,15 @@ def call_open_ai(
         sum(time_per_call_in_seconds) / len(time_per_call_in_seconds),
     )
 
+def get_jaro_similarity(text1, text2):
+    return jellyfish.jaro_similarity(text1, text2)
 
 def get_responses_embeddings_and_avg_time_per_call(args=None, dict=None):
     if args:
         responses, call_embeddings, avg_time_per_call = call_open_ai(
             args.prompt,
             engine=args.engine,
+            model=args.model,
             temperature=float(args.temperature),
             calls=int(args.calls),
             openai_api_key=args.key,
@@ -101,6 +113,7 @@ def get_responses_embeddings_and_avg_time_per_call(args=None, dict=None):
         responses, call_embeddings, avg_time_per_call = call_open_ai(
             dict.get("prompt"),
             engine=dict.get("engine"),
+            model=dict.get("model"),
             temperature=float(dict.get("temperature")),
             calls=int(dict.get("calls")),
             openai_api_key=dict.get("key"),
